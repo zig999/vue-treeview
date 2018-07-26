@@ -3,7 +3,7 @@
 		<input v-model="filterText" @input="debounceFilter">
 		<ul>
 			<TreeItemComponent
-					:pTreeItemId="treeData"
+					:pTreeItemId="rootId"
 					:pTreeViewIndex="itemIndex">
 			</TreeItemComponent>
 		</ul>
@@ -17,7 +17,7 @@
 
 	const TreeItem = require('./model/TreeItem');
 
-	function debounce(func, wait, immediate) {
+	var debounce = function(func, wait, immediate) {
 		var timeout;
 		return function() {
 			console.log('debounced');
@@ -41,7 +41,7 @@
 
 		data: function() {
 			return {
-				treeData: null,
+				rootId: null,
 				itemIndex: {},
 				filterText: ''
 			};
@@ -50,8 +50,8 @@
 			var _this = this;
 			axios.get('./data/tree2.json')
 				.then((response) => {
-				console.log(response);
-					_this.treeData = this.loadTreeItems(response.data);
+					console.log(response);
+					_this.rootId = this.loadTreeItems(response.data);
 				});
 		},
 		methods: {

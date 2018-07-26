@@ -11,7 +11,6 @@ var TreeItem = function(config) {
 TreeItem.prototype.findChildrenNode = function(node, index) {
 	var item = null;
 	var children = this.projectChildren(index);
-	console.log(children);
 	for (let i = 0; i < children.length; i++) {
 		if (children[i].node === node) {
 			item = children[i];
