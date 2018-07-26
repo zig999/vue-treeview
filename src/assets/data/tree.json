@@ -1,0 +1,18 @@
+[
+	{
+		"name": "Tree",
+		"nodePath": ""
+	},
+	{
+		"name": "TreeChild1",
+		"nodePath": "Tree"
+	},
+	{
+		"name": "TreeChild2",
+		"nodePath": "Tree"
+	},
+	{
+		"name": "TreeChild2",
+		"nodePath": "Tree/TreeChild2"
+	}
+]
