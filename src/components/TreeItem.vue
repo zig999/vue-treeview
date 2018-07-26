@@ -1,7 +1,8 @@
 <template>
-	<li v-if="treeItem" :class="{'bold':!isFolder}">
-		<div>{{treeItem.node}}
+	<li v-if="treeItem && treeItem.visible" :class="{'bold':!isFolder}">
+		<div :class="{almostHide:treeItem.visible}">{{treeItem.node}}
 			<span v-if="isFolder">[+]</span>
+			<span>{{treeItem.visible}}</span>
 		</div>
 		<ul>
 			<tree-item
@@ -16,6 +17,7 @@
 
 <script>
 	import Vue from 'vue';
+
 	const TreeItem = require('./model/TreeItem');
 	export default {
 		name: 'TreeItem',
@@ -47,7 +49,7 @@
 			},
 			children: function() {
 				let items = [];
-				this.treeItem.children.map((item)=>{
+				this.treeItem.children.map((item) => {
 					items.push(this.pTreeViewIndex[item]);
 				});
 				return items;
@@ -82,6 +84,9 @@
 </script>
 
 <style scoped>
+	.almostHide {
+		color: red;
+	}
 	.item {
 		cursor: pointer;
 	}

@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<input />
+		<input v-model="filterText" @input="debounceFilter">
 		<ul>
 			<TreeItemComponent
 					:pTreeItemId="treeData"
@@ -17,7 +17,23 @@
 
 	const TreeItem = require('./model/TreeItem');
 
-	export default {
+	function debounce(func, wait, immediate) {
+		var timeout;
+		return function() {
+			console.log('debounced');
+			var context = this, args = arguments;
+			var later = function() {
+				timeout = null;
+				if (!immediate) func.apply(context, args);
+			};
+			var callNow = immediate && !timeout;
+			clearTimeout(timeout);
+			timeout = setTimeout(later, wait);
+			if (callNow) func.apply(context, args);
+		};
+	};
+
+	var component = {
 		name: 'TreeView',
 		components: {
 			TreeItemComponent
@@ -26,7 +42,8 @@
 		data: function() {
 			return {
 				treeData: null,
-				itemIndex: {}
+				itemIndex: {},
+				filterText: ''
 			};
 		},
 		mounted: function() {
@@ -47,6 +64,7 @@
 				var root = new TreeItem({
 					node: 'root'
 				});
+				this.itemIndex[root.id] = root;
 				console.time('load');
 				for (let i = 0; i < data.length; i++) {
 					var pathParts = data[i].split('/');
@@ -70,17 +88,23 @@
 					});
 				}
 				console.timeEnd('load');
-				return root.children[0];
+				return root.id;
 			},
 
 			filterNode: function(node) {
-				var filtered = [];
+				if (typeof node != 'string') {
+					node = this.filterText;
+				}
 				for (let item in this.itemIndex) {
-					if (this.itemIndex[item].node.indexOf(node) >= 0) {
-						this.itemIndex[item].visible = true;
+					let treeItem = this.itemIndex[item];
+					treeItem.visible = (treeItem.node.indexOf(node) >= 0);
+					if (treeItem.visible) {
+						treeItem.updateParents('visible', true);
 					}
 				}
 			}
 		}
-	}
+	};
+	component.methods.debounceFilter = debounce(component.methods.filterNode, 300);
+	export default component;
 </script>

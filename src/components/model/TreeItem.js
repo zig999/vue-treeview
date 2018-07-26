@@ -5,11 +5,12 @@ var TreeItem = function(config) {
 	this.node = config.node || '';
 	this.children = config.children || [];
 	this.parent = config.parent || null;
+	this.visible = true
 };
 
 TreeItem.prototype.findChildrenNode = function(node, index) {
 	var item = null;
-	var children = this.children.map(item => index[item]);
+	var children = this.projectChildren(index);
 	console.log(children);
 	for (let i = 0; i < children.length; i++) {
 		if (children[i].node === node) {
@@ -18,6 +19,19 @@ TreeItem.prototype.findChildrenNode = function(node, index) {
 		}
 	}
 	return item;
+};
+
+TreeItem.prototype.updateParents = function(prop, value) {
+	var item = null;
+	item = this;
+	while (item.parent) {
+		item.parent[prop] = value;
+		item = item.parent;
+	}
+};
+
+TreeItem.prototype.projectChildren = function(index) {
+	return this.children.map(item => index[item]);
 };
 
 TreeItem.prototype.hasChildren = function() {
